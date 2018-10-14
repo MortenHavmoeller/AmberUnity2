@@ -57,7 +57,7 @@ namespace Amber.FileHandling
 			return Directory.Exists(GetPath(type));
 		}
 
-		public static int CreateDir(FileType type)
+		public static int CreateDirIfNecessary(FileType type)
 		{
 			string path = GetPath(type);
 			

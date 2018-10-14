@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8891156e58b847d43b5ddf3e166a2adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tilePrefabLib: {fileID: 11400000, guid: d49e9bb0b9e31894a828f4ca687a008f, type: 2}
 --- !u!4 &1293660232
 Transform:
   m_ObjectHideFlags: 0
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1293660230}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31bc5ca65efecfb44ba4f97ace8e7215, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c46618c642db93458b6a581ec5bdfaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1581539579

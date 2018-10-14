@@ -12,25 +12,61 @@ public struct IndoorTileData
 
 public class IndoorTile : MonoBehaviour
 {
-	public IndoorTileData data; // make reference to data held by the map?
+	private IndoorTileMap _map;
+	private UInt32 _tileID;
 
-	public static IndoorTile Create(IndoorTileData data)
+	private GameObject _model;
+
+	public UInt32 GetID()
 	{
-		GameObject go = new GameObject(data.tileID.ToString());
+		return _tileID;
+	}
+
+	public IndoorTileData GetDataCopy()
+	{
+		return _map.GetTileDataCopy(_tileID);
+	}
+
+	public void SetData(IndoorTileData data)
+	{
+		_map.SetTileData(_tileID, data);
+	}
+
+	public static IndoorTile Create(UInt32 tileID, IndoorTileMap map)
+	{
+		GameObject go = new GameObject(tileID.ToString());
 		IndoorTile result = go.AddComponent<IndoorTile>();
-		result.data = data;
+		result._map = map;
+		result._tileID = tileID;
+
 		result.InstantiateModel();
 		return result;
 	}
 
+	public void ChangeTileType(UInt16 newType)
+	{
+		IndoorTileData data = _map.GetTileDataCopy(_tileID);
+		data.tileType = newType;
+		_map.SetTileData(_tileID, data);
+		Cleanup();
+		InstantiateModel();
+	}
+
+	private void Cleanup()
+	{
+		if (_model != null)
+		{
+			_model.transform.parent = null;
+			Destroy(_model);
+		}
+	}
+
 	private void InstantiateModel()
 	{
-		if (data.tileType == 0)
-			return;
-
-		GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		go.transform.localScale = Vector3.one * IndoorTileMap.TILE_SIZE;
-		go.transform.parent = transform;
-		go.transform.localPosition = Vector3.zero;
+		IndoorTileData data = _map.GetTileDataCopy(_tileID);
+		_model = _map.tilePrefabLib.CreateNewInstance(data.tileType);
+		_model.transform.localScale = Vector3.one * IndoorTileMap.TILE_SIZE;
+		_model.transform.parent = transform;
+		_model.transform.localPosition = Vector3.zero;
 	}
 }

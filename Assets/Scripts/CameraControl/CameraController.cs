@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
 
 	private Vector2 aimPointOffset = new Vector2(OFFSET_X, OFFSET_Y);
 
-	private Vector2 movement = new Vector2();
+	//private Vector2 movement = new Vector2();
 	private int zoomStep = DEFAULT_HEIGHT_STEP;
 
 	private Vector3 aimPositionMovement = new Vector3();
@@ -92,11 +92,5 @@ public class CameraController : MonoBehaviour
 	{
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(aimPosition, 0.25f);
-		
-		//Gizmos.DrawRay(transform.position, Quaternion.LookRotation((aimPosition - transform.position).GetHorizontal(), Vector3.up) * Vector3.right);
-		//Gizmos.color = Color.green;
-		//Gizmos.DrawRay(transform.position, Quaternion.LookRotation((aimPosition - transform.position).GetHorizontal(), Vector3.up) * Vector3.up);
-		//Gizmos.color = Color.blue;
-		//Gizmos.DrawRay(transform.position, Quaternion.LookRotation((aimPosition - transform.position).GetHorizontal(), Vector3.up) * Vector3.forward);
 	}
 }

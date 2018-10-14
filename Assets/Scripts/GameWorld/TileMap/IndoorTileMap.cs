@@ -7,8 +7,8 @@ using UnityEngine;
 public struct IndoorTileMapData
 {
 	public string name;
-	public uint width;
-	public uint height;
+	public UInt16 width;
+	public UInt16 height;
 
 	public int tileSet;
 	public Vector3 ambientLight;
@@ -16,6 +16,17 @@ public struct IndoorTileMapData
 
 	// array of tile data here?
 	public IndoorTileData[] tiles;
+
+	public static IndoorTileData[] CreateRandomTiles(UInt16 width, UInt16 height)
+	{
+		IndoorTileData[] tilesData = new IndoorTileData[width * height];
+		for (UInt32 i = 0; i < tilesData.Length; i++)
+		{
+			tilesData[i].tileID = i;
+			tilesData[i].tileType = (ushort)UnityEngine.Random.Range(0, 2);
+		}
+		return tilesData;
+	}
 }
 
 public class IndoorTileMap : MonoBehaviour
@@ -23,6 +34,7 @@ public class IndoorTileMap : MonoBehaviour
 	public const uint TILE_SIZE = 5;
 
 	public IndoorTileMapData data;
+	public IndoorTilePrefabLib tilePrefabLib;
 
 	private GameObject _floor;
 	private IndoorTile[] _tiles;
@@ -34,19 +46,17 @@ public class IndoorTileMap : MonoBehaviour
 
 	}
 
-	public void Initialize(IndoorTileMapData mapData)
+	public void Initialize(IndoorTileMapData mapData, IndoorTilePrefabLib tilePrefabLib)
 	{
+		this.tilePrefabLib = tilePrefabLib;
+
 		if (initialized)
 		{
 			Cleanup();
 		}
 		else
 		{
-			_floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-			_floor.name = "floor";
-			_floor.transform.localScale = new Vector3(0.1f * mapData.width * TILE_SIZE, 1, 0.1f * mapData.height * TILE_SIZE);
-			_floor.transform.parent = transform;
-			_floor.transform.localPosition = new Vector3(mapData.width * TILE_SIZE * 0.5f, 0, mapData.height * TILE_SIZE * 0.5f);
+			InstantiateFloor(mapData);
 		}
 		
 		data = mapData;
@@ -55,52 +65,34 @@ public class IndoorTileMap : MonoBehaviour
 		if (data.tiles.Length != _tiles.Length)
 			throw new InvalidOperationException();
 
-		IndoorTile newTile;
-		UInt16 x, y;
-		for (UInt32 i = 0; i < data.tiles.Length; i++)
-		{
-			newTile = IndoorTile.Create(data.tiles[i]);
-			newTile.transform.parent = transform;
-			GetTileIndexes(data.tiles[i].tileID, out x, out y);
-			newTile.transform.localPosition = new Vector3(x + 0.5f, 0, y + 0.5f) * TILE_SIZE;
-
-			_tiles[data.tiles[i].tileID] = newTile;
-		}
+		InstantiateTiles(data);
 
 		initialized = true;
 	}
 
-	public static IndoorTileData[] CreateEmptyTiles(UInt32 width, UInt32 height)
+	private void InstantiateFloor(IndoorTileMapData mapData)
 	{
-		IndoorTileData[] tilesData = new IndoorTileData[width * height];
-		for (UInt32 i = 0; i < tilesData.Length; i++)
-		{
-			tilesData[i].tileID = i;
-			tilesData[i].tileType = 0;
-		}
-		return tilesData;
+		_floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+		_floor.name = "floor";
+		_floor.transform.localScale = new Vector3(0.1f * mapData.width * TILE_SIZE, 1, 0.1f * mapData.height * TILE_SIZE);
+		_floor.transform.parent = transform;
+		_floor.transform.localPosition = new Vector3(mapData.width * TILE_SIZE * 0.5f, 0, mapData.height * TILE_SIZE * 0.5f);
 	}
 
-	public static IndoorTileData[] CreateBlockedTiles(UInt32 width, UInt32 height)
+	private void InstantiateTiles(IndoorTileMapData mapData)
 	{
-		IndoorTileData[] tilesData = new IndoorTileData[width * height];
-		for (UInt32 i = 0; i < tilesData.Length; i++)
+		IndoorTile newTile;
+		UInt16 x, y;
+		for (UInt32 i = 0; i < mapData.tiles.Length; i++)
 		{
-			tilesData[i].tileID = i;
-			tilesData[i].tileType = 1;
-		}
-		return tilesData;
-	}
+			newTile = IndoorTile.Create(mapData.tiles[i].tileID, this);
+			newTile.transform.parent = transform;
+			GetTileIndexes(mapData.tiles[i].tileID, out x, out y);
 
-	public static IndoorTileData[] CreateRandomTiles(UInt32 width, UInt32 height)
-	{
-		IndoorTileData[] tilesData = new IndoorTileData[width * height];
-		for (UInt32 i = 0; i < tilesData.Length; i++)
-		{
-			tilesData[i].tileID = i;
-			tilesData[i].tileType = (ushort)UnityEngine.Random.Range(0, 2);
+			newTile.transform.localPosition = new Vector3(x + 0.5f, 0, y + 0.5f) * TILE_SIZE;
+
+			_tiles[mapData.tiles[i].tileID] = newTile;
 		}
-		return tilesData;
 	}
 
 	private void Cleanup()
@@ -116,24 +108,39 @@ public class IndoorTileMap : MonoBehaviour
 		return _tiles[GetTileID(x, y)];
 	}
 
-	private void InitializeTileArray()
+	public IndoorTile GetTile(UInt32 tileID)
 	{
-		_tiles = new IndoorTile[data.width * data.height];
+		return _tiles[tileID];
 	}
 
-	private UInt32 GetMapSize()
+	public IndoorTileData GetTileDataCopy(UInt32 tileID)
 	{
-		return data.width * data.height;
+		return data.tiles[tileID];
 	}
 
-	private UInt32 GetTileID(UInt16 x, UInt16 y)
+	public void SetTileData(UInt32 tileID, IndoorTileData tileData)
 	{
-		return x * (data.height) + y;
+		data.tiles[tileID] = tileData;
 	}
 
-	private void GetTileIndexes(UInt32 tileID, out UInt16 x, out UInt16 y)
+	public UInt32 GetMapSize()
+	{
+		return (UInt32)data.width * data.height;
+	}
+
+	public UInt32 GetTileID(UInt16 x, UInt16 y)
+	{
+		return (UInt32)x * (data.height) + y;
+	}
+
+	public void GetTileIndexes(UInt32 tileID, out UInt16 x, out UInt16 y)
 	{
 		x = (UInt16)(tileID % data.height);
 		y = (UInt16)(tileID / data.height);
+	}
+
+	private void InitializeTileArray()
+	{
+		_tiles = new IndoorTile[data.width * data.height];
 	}
 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4a84b075fbaba4496b22ce1e32968e, type: 3}
+  m_Name: IndoorTilePrefabLib
+  m_EditorClassIdentifier: 
+  type0: {fileID: 1618594840211410, guid: cba4be0547ee0a543bd31249bfdd5ee7, type: 2}
+  type1: {fileID: 1154431055328070, guid: 921b7369e8f85f041bf3f7d6fc22e39d, type: 2}
+  type2: {fileID: 0}
+  type3: {fileID: 0}
