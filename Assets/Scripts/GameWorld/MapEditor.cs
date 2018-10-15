@@ -5,6 +5,7 @@ using Amber.FileHandling;
 using Amber.Interaction;
 using Amber.Interaction.TileMapCommands;
 using UnityEngine;
+using Amber.GameWorld.Tools;
 
 public class MapEditor : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class MapEditor : MonoBehaviour
 		_tileMap = go.AddComponent<IndoorTileMap>();
 
 		_tileMap.Initialize(tileMapData, tilePrefabLib);
+
+		LineDrawTool.EnsureExistance();
 	}
 
 	private void OnGUI()
@@ -40,10 +43,12 @@ public class MapEditor : MonoBehaviour
 		SaveAndLoadButtons(evt);
 		EditingButtons(evt);
 
-		if (evt.type != EventType.Layout)
-		{
-			ClearTiles(evt);
-		}
+		ClearTiles(evt);
+	}
+
+	private void LateUpdate()
+	{
+		HighlightTiles(Input.mousePosition);
 	}
 
 	private void SaveAndLoadButtons(Event evt)
@@ -81,6 +86,23 @@ public class MapEditor : MonoBehaviour
 		}
 	}
 
+	private void HighlightTiles(Vector2 mousePos)
+	{
+		Ray mouseRay = Camera.main.ScreenPointToRay(mousePos);
+
+		GameObject underMouse;
+		RaycastHit hitInfo;
+		if (Physics.Raycast(mouseRay, out hitInfo))
+		{
+			underMouse = hitInfo.collider.gameObject;
+
+			IndoorTile tile;
+			if (TryGetTile(underMouse, out tile))
+			{
+				LineDrawTool.DrawBox(underMouse.transform.position, Vector3.one * 5.05f, Color.green);
+			}
+		}
+	}
 
 	private void ClearTiles(Event evt)
 	{
@@ -91,7 +113,7 @@ public class MapEditor : MonoBehaviour
 		if (Physics.Raycast(mouseRay, out hitInfo))
 		{
 			underMouse = hitInfo.collider.gameObject;
-
+			
 			if (evt.type == EventType.MouseDown && evt.button == 0)
 			{
 				IndoorTile tile;
@@ -108,13 +130,14 @@ public class MapEditor : MonoBehaviour
 					{
 						tileType = 0;
 					}
-					TileTypeChangeCommand typeChgCmd = new TileTypeChangeCommand(tile.GetID(), tileType, _tileMap);
-
-					CommandQueue.Do(typeChgCmd);
+					
+					CommandQueue.Do(new TileTypeChangeCommand(tile.GetID(), tileType, _tileMap));
 				}
 			}
 		}
 	}
+
+
 
 	private Rect RectLayout(float x, float y, float width, float height)
 	{
@@ -149,6 +172,12 @@ public class MapEditor : MonoBehaviour
 
 	private bool TryGetTile(GameObject go, out IndoorTile tile)
 	{
+		if (go.transform.parent == null)
+		{
+			tile = null;
+			return false;
+		}
+
 		GameObject parent = go.transform.parent.gameObject;
 
 		if (parent == null)

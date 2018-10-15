@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e4a84b075fbaba4496b22ce1e32968e, type: 3}
   m_Name: IndoorTilePrefabLib
   m_EditorClassIdentifier: 
-  type0: {fileID: 1618594840211410, guid: cba4be0547ee0a543bd31249bfdd5ee7, type: 2}
+  type0: {fileID: 1512564387820408, guid: 50e6a07a48093ee47bd8f0507598a4f5, type: 2}
   type1: {fileID: 1154431055328070, guid: 921b7369e8f85f041bf3f7d6fc22e39d, type: 2}
   type2: {fileID: 0}
   type3: {fileID: 0}

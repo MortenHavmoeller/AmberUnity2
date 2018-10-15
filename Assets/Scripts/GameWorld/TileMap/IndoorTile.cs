@@ -65,7 +65,6 @@ public class IndoorTile : MonoBehaviour
 	{
 		IndoorTileData data = _map.GetTileDataCopy(_tileID);
 		_model = _map.tilePrefabLib.CreateNewInstance(data.tileType);
-		_model.transform.localScale = Vector3.one * IndoorTileMap.TILE_SIZE;
 		_model.transform.parent = transform;
 		_model.transform.localPosition = Vector3.zero;
 	}

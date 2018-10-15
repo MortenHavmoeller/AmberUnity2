@@ -54,10 +54,6 @@ public class IndoorTileMap : MonoBehaviour
 		{
 			Cleanup();
 		}
-		else
-		{
-			InstantiateFloor(mapData);
-		}
 		
 		data = mapData;
 		_tiles = new IndoorTile[GetMapSize()];
@@ -68,15 +64,6 @@ public class IndoorTileMap : MonoBehaviour
 		InstantiateTiles(data);
 
 		initialized = true;
-	}
-
-	private void InstantiateFloor(IndoorTileMapData mapData)
-	{
-		_floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-		_floor.name = "floor";
-		_floor.transform.localScale = new Vector3(0.1f * mapData.width * TILE_SIZE, 1, 0.1f * mapData.height * TILE_SIZE);
-		_floor.transform.parent = transform;
-		_floor.transform.localPosition = new Vector3(mapData.width * TILE_SIZE * 0.5f, 0, mapData.height * TILE_SIZE * 0.5f);
 	}
 
 	private void InstantiateTiles(IndoorTileMapData mapData)
