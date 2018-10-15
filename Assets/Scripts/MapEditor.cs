@@ -6,6 +6,7 @@ using Amber.Interaction;
 using Amber.Interaction.TileMapCommands;
 using UnityEngine;
 using Amber.GameWorld.Tools;
+using Amber.GameWorld.TileMap;
 
 public class MapEditor : MonoBehaviour
 {
@@ -131,7 +132,7 @@ public class MapEditor : MonoBehaviour
 						tileType = 0;
 					}
 					
-					CommandQueue.Do(new TileTypeChangeCommand(tile.GetID(), tileType, _tileMap));
+					CommandQueue.Do(new ChangeTileType(tile.GetID(), tileType, _tileMap));
 				}
 			}
 		}

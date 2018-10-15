@@ -1,8 +1,9 @@
 ﻿using System;
+using Amber.GameWorld.TileMap;
 
 namespace Amber.Interaction.TileMapCommands
 {
-	public class TileTypeChangeCommand : ICommand
+	public class ChangeTileType : ICommand
 	{
 		private IndoorTileMap _map;
 		private UInt32 _tileID;
@@ -10,7 +11,7 @@ namespace Amber.Interaction.TileMapCommands
 		private UInt16 _newType;
 		private UInt16 _oldType;
 
-		public TileTypeChangeCommand(UInt32 tileID, UInt16 newType, IndoorTileMap map)
+		public ChangeTileType(UInt32 tileID, UInt16 newType, IndoorTileMap map)
 		{
 			_map = map;
 			_tileID = tileID;
